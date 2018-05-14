@@ -1,10 +1,4 @@
-library(pdftools)
-library(fuzzyjoin)
-library(tidyverse)
-
-# paths for the raw data and the main research folder - I keep clean (small) files on my internal drive and the raw files live on the external
-russia_raw <- ("/Volumes/SSD/DataHouse/RussianAds")
-russia <- ("/Users/williamlief/Documents/Research Projects/RussianAds") 
+source("/Users/williamlief/Documents/Research Projects/RussianAds/Code/libs_and_paths.R")
 
 setwd(russia_raw) # set the working directory to where the raw data is stored
 # goal: one row per file with variables for each of the entries identified above
