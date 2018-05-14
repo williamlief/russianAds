@@ -1,0 +1,69 @@
+---
+title: "Initial Statistcs"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+source("/Users/williamlief/Documents/Research Projects/RussianAds/Code/libs_and_paths.R")
+
+df <- read_rds(paste0(russia,"/clean/fb_russia_ads_clean.rds")) %>% 
+  select(Clicks, Impressions, Spend_RUB, Spend_USD, Create_Date, End_Date)
+df2 <- df %>% 
+  filter(Impressions!=0)
+
+
+pct_cum <- function(data,var) {
+  data %>% 
+    select_(var) %>% 
+    arrange_(paste0("desc(",var,")")) %>% 
+    mutate_(var = var) %>% 
+    mutate(tot = sum(var, na.rm=T),
+           cum = cumsum(var), 
+           pct_cum = cum/tot,
+           n = row_number()) %>% 
+    filter((pct_cum >= .10 & lag(pct_cum) < 0.10)|
+             (pct_cum >= .25 & lag(pct_cum) < 0.25)|
+             (pct_cum >= .50 & lag(pct_cum) < 0.50)|
+             (pct_cum >= .75 & lag(pct_cum) < 0.75)|
+             (pct_cum >= .90 & lag(pct_cum) < 0.90)) %>% 
+    select(n,pct_cum)
+}
+```
+
+## Overview
+
+This is a preliminary summary of the data from the Facebook advertisements released by the U.S. House of Representatives Permanent Select Committee on Intelligence. In their words: "As part of that continuing effort to educate the public and seek additional analysis, the Committee Minority is making available all IRA advertisements identified by Facebook. This is an effort to be fully transparent with the public, allow outside experts to analyze the data, and provide the American people a fuller accounting of Russian efforts to sow discord and interfere in our democracy."
+
+## Total Reach
+
+The released data included 3,517 individual advertisements. Here we see the total amount spent on the advertisements as well as the total number of clicks and impressions. Spending was denoted in Rubles and was converted to dollars using the exchange rate on the date that the ad was created. While these spending figures do not include salaries for the individuals who created the advertisements, it should be noted that the total amount spent on the ads was extraordinarly low. For context, Bloomberg reports that Hillary Clinton raised 1.2 billion dollars for the 2016 election while Donald Trump raised 646 million dollars (https://www.bloomberg.com/politics/graphics/2016-presidential-campaign-fundraising/). 
+
+```{r}
+sum(df$Spend_RUB, na.rm=T) # total spending in Rubles
+sum(df$Spend_USD, na.rm=T) # total spending in dollars
+sum(df$Impressions, na.rm=T) # total impressions
+sum(df$Clicks, na.rm=T) # total
+```
+
+## Summary Statistics
+These figures give summary statistics for the advertisements. First we report the statistics for all 3,517 ads, then for just those ads that were seen by at least one person. Fully one quarter of the released advertisements were never seen. We can see that the reach of the ads was highly skewed. While the mean impression rate was 15,000 (for ads that were seen at least once), the maximum was 1.3 million impressions. 
+```{r}
+summary(df %>% select(Impressions,Clicks,Spend_RUB,Spend_USD))
+summary(df2 %>% select(Impressions,Clicks,Spend_RUB,Spend_USD))
+```
+
+## Most Ads Don't Matter
+In these tables we show the number of ads that make up 10, 25, 50, 75 and 90 percent of the total Impressions, Clicks, and Spending. We see that ninety percent of the impressions came from 827 ads, less than a quarter of the ads released. 
+
+```{r echo=FALSE}
+
+kable(pct_cum(df,"Impressions"), caption="Impressions", digits=2, format("html"), col.names=c("Number of Ads", "Pct of Total"))
+kable(pct_cum(df,"Clicks"), caption="Clicks",           digits=2, format("html"), col.names=c("Number of Ads", "Pct of Total"))
+kable(pct_cum(df,"Spend_RUB"), caption="Cost in RUB",   digits=2, format("html"), col.names=c("Number of Ads", "Pct of Total"))
+
+```
+
+## Conclusions so Far
+Less than 100,000 dollars was spent to take out these ads - this is a very small amount of money. It should be compared to the amount that was spent by the Trump and Clinton campaigns for advertising generally and for Facebook based ads in particular. 
+While more than 3,500 ads were released, a much smaller fraction of those ads were seen by any meaningful amount of people. When analyzing the ad content, we should attend to the fact that the majority of ads had barely 1,000 impressions and that the influence of the ads is extremely skewed towards a few highly viewed advertisements. 
