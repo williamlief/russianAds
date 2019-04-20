@@ -54,7 +54,15 @@ kable(pct_cum(df,"Impressions"))
 kable(pct_cum(df,"Clicks"))
 kable(pct_cum(df,"Spend_RUB"))
 
- 
+#
+plot(pct_cum(df,"Impressions"))
+lines(pct_cum(df,"Impressions"))
+
+ggplot(df, aes(df$Impressions)) + stat_ecdf()
+mydata <- df2$Spend_USD
+qplot(unique(mydata), ecdf(mydata)(unique(mydata))*length(mydata), geom='step')
+
+
 
 # Distribution of Impressions/Clicks
 hist(df2$Impressions)
