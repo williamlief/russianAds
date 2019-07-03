@@ -7,4 +7,4 @@ library(tidytext)
 
 
 russia_raw <- ("/Volumes/SSD/DataHouse/RussianAds")
-russia <- ("/Users/williamlief/Documents/Research Projects/RussianAds") 
+russia <- ("/Users/williamlief/Documents/ResearchProjects/RussianAds") 

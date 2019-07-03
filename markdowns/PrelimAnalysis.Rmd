@@ -1,11 +1,13 @@
 ---
 title: "Initial Statistcs"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-source("/Users/williamlief/Documents/Research Projects/RussianAds/Code/libs_and_paths.R")
+source("/Users/williamlief/Documents/ResearchProjects/RussianAds/Code/libs_and_paths.R")
 
 df <- read_rds(paste0(russia,"/clean/fb_russia_ads_clean.rds")) %>% 
   select(Clicks, Impressions, Spend_RUB, Spend_USD, Create_Date, End_Date)

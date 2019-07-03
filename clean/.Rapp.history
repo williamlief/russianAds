@@ -1,0 +1,2 @@
+load("/Users/williamlief/Documents/Research Projects/RussianAds/clean/fb_russia_ads_clean.rds")
+ls()
